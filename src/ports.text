@@ -1,0 +1,11 @@
+eureka.server:8761
+
+service.provider:8080
+
+consumer:8081
+
+hystrix:8086
+
+zuul:8087
+
+gateway:8088

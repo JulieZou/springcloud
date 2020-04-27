@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: service-pro
+  zipkin:
+    base-url: http://192.168.110.131:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
+    web:
+      client:
+        enabled: true
+  zuul:
+    FormBodyWrapperFilter:
+      pre:
+        disable: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+

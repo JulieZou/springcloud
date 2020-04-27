@@ -1,0 +1,53 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: api-gateway
+  ## 自定义路由配置
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          ## 是否与服务注册于发现组件进行结合
+          enabled: true
+          ## 将serviceId 转为小写
+          lowerCaseServiceId: true
+            #      routes:
+            #        - id: gateway-service
+            #          uri: https://github.com
+            #          order: 0
+            #          predicates:
+            #            ## 请求方式是GET则予以访问
+            #            - Method=GET
+            #            ## 通过请求路径匹配
+            #            - Path=/kubeoperator/**
+            ## 在这个时间之前可以访问uri的资源
+            #- Before=2020-04-25T00:00:00+08:00[Asia/Shanghai]
+            ## 在这个时间之后可以访问uri的资源
+            #- After=2020-04-25T00:00:00+08:00[Asia/Shanghai]
+            ## 在下面这个时间期间内可以访问uri资源
+          #- Between=2020-04-23T00:00:00+08:00[Asia/Shanghai], 2020-04-25T00:00:00+08:00[Asia/Shanghai]
+      routes:
+        - id: requestratelimiter_route
+          uri: http://github.com/
+          filters:
+            - name: RequestRateLimiter
+              args:
+                ## 允许用户每秒处理多少个请求
+                redis-rate-limiter.replenishRate: 10
+                ## 令牌桶的容量，允许在一秒钟内完成的最大请求数
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userKeyResolver}"
+          predicates:
+            - Method=GET
+  redis:
+    host: 192.168.110.130
+    database: 1
+    port: 6379
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
